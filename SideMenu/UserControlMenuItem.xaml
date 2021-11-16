@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="MyServicesLibrary.SideMenu.UserControlMenuItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="13"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             FontFamily="{DynamicResource MaterialDesignFont}"
+             mc:Ignorable="d" >
+    <Grid x:Name="MenuBlock"
+          HorizontalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <md:PackIcon Kind="{Binding Path=Icon}"
+                     Grid.Column="0"
+                     Width="22" 
+                     Height="22" 
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Top"
+                     Margin="0,13,0,0"
+                     Foreground="White"/>
+        <Expander x:Name="ExpanderMenu" 
+                  Grid.Column="1"
+                  IsExpanded="False" 
+                  HorizontalAlignment="Stretch" 
+                  Foreground="White"
+                  Background="Transparent" 
+                  Header="{Binding Path=Header}">
+            <ListView x:Name="ListViewMenu" 
+                      ItemsSource="{Binding Path=SubItems}" 
+                      Background="Transparent"
+                      Foreground="White"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                      SelectionChanged="ListViewMenu_SelectionChanged">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Path=Name}" Padding="17,5,0,5" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Expander>
+    </Grid>
+</UserControl>
