@@ -111,20 +111,6 @@ public class FilterSectionViewModel : BaseViewModel
             }
         return families;
     }
-    //public abstract ObservableCollection<TreeFamily> RetTreeFamilies();
-    //protected List<TreeItem> PList<T>(List<T> tList)
-    //{
-    //    List<IdName> ids = new List<IdName>((IEnumerable<IdName>)tList);
-    //    List<TreeItem> result = new List<TreeItem>();
-    //    foreach (IdName r in ids)
-    //    {
-    //        TreeItem n = new TreeItem();
-    //        n.Id = r.Id;
-    //        n.Name = r.Name;
-    //        result.Add(n);
-    //    }
-    //    return result;
-    //}
 
     protected List<TreeItem> PersonListFill()
     {
