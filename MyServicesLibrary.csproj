@@ -14,6 +14,9 @@
 	</ItemGroup>
 	
 	<ItemGroup>
+    <Page Update="Controls\UniversalDataGrid\UniversalDataGridAuto.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
     <Page Update="Infrastructure\MessageBoxes\MessageBoxCustom.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
