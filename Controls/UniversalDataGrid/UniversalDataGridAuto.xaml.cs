@@ -36,4 +36,23 @@ public partial class UniversalDataGrid : UserControl
 
         }
     }
+    private void UngroupButton_Click(object sender, RoutedEventArgs e)
+    {
+        ICollectionView cvTasks = CollectionViewSource.GetDefaultView(myDataGrid.ItemsSource);
+        if (cvTasks != null)
+        {
+            cvTasks.GroupDescriptions.Clear();
+        }
+    }
+
+    private void GroupButton_Click(object sender, RoutedEventArgs e)
+    {
+        ICollectionView cvData = CollectionViewSource.GetDefaultView(myDataGrid.ItemsSource);
+        if (cvData != null && cvData.CanGroup == true)
+        {
+            cvData.GroupDescriptions.Clear();
+            cvData.GroupDescriptions.Add(new PropertyGroupDescription("IsPrime"));
+        }
+    }
+
 }

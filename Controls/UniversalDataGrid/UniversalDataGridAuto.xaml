@@ -5,6 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:conv="clr-namespace:MyServicesLibrary.Converters"
     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
     TextElement.FontWeight="Regular"
     TextElement.FontSize="13"
@@ -54,17 +56,88 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
+        
+        <conv:IsNormConverter x:Key="isNormConverter" />
+        
     </UserControl.Resources>
 
     <Grid Margin="0,0,0,0" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition x:Name="rowTotal" Height="28" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
         </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal" 
+                    IsEnabled="{Binding IsGroupEnabled}"
+                    Margin="10">
+            <Button Content="Группировка" 
+                    Style="{StaticResource MaterialDesignFlatButton}"
+                    Margin="2" 
+                    Width="120"
+                    Click="GroupButton_Click" />
+            <Button Content="Сброс" 
+                    Style="{StaticResource MaterialDesignFlatButton}"
+                    Margin="8,2,2,2" 
+                    Width="120"
+                    Click="UngroupButton_Click" />
+        </StackPanel>
+
         <DataGrid x:Name="myDataGrid" 
+                  Grid.Row="1"
                   AutoGenerateColumns="True" 
                   IsReadOnly="False">
+            <DataGrid.GroupStyle>
+
+                <GroupStyle>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Margin" Value="0,0,0,0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type GroupItem}">
+                                        <Expander IsExpanded="True" 
+                                                    md:ExpanderAssist.HorizontalHeaderPadding="20,2"
+                                            Background="DarkGray"
+                                            Foreground="White">
+                                            <Expander.Header>
+                                                <TextBlock FontWeight="Bold" 
+                                                           HorizontalAlignment="Left"
+                                                           VerticalAlignment="Center"
+                                                           Margin="0,0,0,0"
+                                                           Text="{Binding Path=Name, ConverterParameter=Истина-Ложь, 
+                                                                    Converter={StaticResource isNormConverter}}" />
+                                                <!--<TextBlock.Text>
+                                                        -->
+                                                <!--<conv:ConverterBindableParameter Binding="{Binding Tag, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}"
+                                                                                          Converter="{StaticResource AccessLevelToVisibilityConverter}"
+                                                                                          ConverterParameterBinding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Tag}" />-->
+
+                                                <!--Text="{Binding Path=Name, ConverterParameter={Binding converterParameter}, 
+                                                                    Converter={StaticResource isNormConverter}}">-->
+
+                                            </Expander.Header>
+                                            <Expander.Content>
+                                                <ItemsPresenter />
+                                            </Expander.Content>
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+
+            </DataGrid.GroupStyle>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                    <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
+                    <Setter Property="FontSize" Value="12" />
+                </Style>
+            </DataGrid.RowStyle>
+
         </DataGrid>
+        
     </Grid>
 </UserControl>
