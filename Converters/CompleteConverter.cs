@@ -1,7 +1,7 @@
 ﻿namespace MyServicesLibrary.Converters;
 
 [ValueConversion(typeof(Boolean), typeof(String))]
-public class IsNormConverter : IValueConverter
+public class CompleteConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {

@@ -5,4 +5,5 @@ public class DataGridStruct
     public string Binding { get; set; }
     public double ColWidth { get; set; }
     public string NumericFormat { get; set; }
+    public bool IsGrouping { get; set; }
 }

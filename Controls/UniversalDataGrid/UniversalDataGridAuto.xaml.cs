@@ -4,14 +4,29 @@ namespace MyServicesLibrary.Controls.UniversalDataGrid;
 public partial class UniversalDataGrid : UserControl
 {
     private List<DataGridStruct> tableStruct;
+    public string CaptionGroupPanel { get; set; } = "Нет";
+    private string groupFieldName;
+    public Visibility IsGroupPanelVisible { get; set; }
     public UniversalDataGrid(List<DataGridStruct> tableStructure)
     {
         tableStruct = tableStructure;
+        DataGridStruct rec = tableStruct.Find(m => m.IsGrouping == true);
+        if(rec != null)
+        {
+            groupFieldName = rec.Binding;
+            CaptionGroupPanel = rec.Headers;
+            IsGroupPanelVisible = Visibility.Visible;
+        }
+        else
+        {
+            IsGroupPanelVisible = Visibility.Collapsed;
+        }
         InitializeComponent();
         myDataGrid.AutoGeneratingColumn += myDataGrid_AutoGeneratingColumn;
     }
     public void Show<T>(List<T> tableData)
     {
+        DataContext = this;
         myDataGrid.ItemsSource = tableData;
     }
     void myDataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
@@ -38,20 +53,23 @@ public partial class UniversalDataGrid : UserControl
     }
     private void UngroupButton_Click(object sender, RoutedEventArgs e)
     {
-        ICollectionView cvTasks = CollectionViewSource.GetDefaultView(myDataGrid.ItemsSource);
-        if (cvTasks != null)
+        ICollectionView cvData = CollectionViewSource.GetDefaultView(myDataGrid.ItemsSource);
+        cvData.SortDescriptions.Clear();
+        if (cvData != null)
         {
-            cvTasks.GroupDescriptions.Clear();
+            cvData.GroupDescriptions.Clear();
         }
     }
 
     private void GroupButton_Click(object sender, RoutedEventArgs e)
     {
         ICollectionView cvData = CollectionViewSource.GetDefaultView(myDataGrid.ItemsSource);
+        cvData.SortDescriptions.Clear();
+        cvData.SortDescriptions.Add(new SortDescription(groupFieldName, ListSortDirection.Descending));
         if (cvData != null && cvData.CanGroup == true)
         {
             cvData.GroupDescriptions.Clear();
-            cvData.GroupDescriptions.Add(new PropertyGroupDescription("IsPrime"));
+            cvData.GroupDescriptions.Add(new PropertyGroupDescription(groupFieldName));
         }
     }
 

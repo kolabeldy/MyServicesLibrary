@@ -57,7 +57,7 @@
             </Setter>
         </Style>
         
-        <conv:IsNormConverter x:Key="isNormConverter" />
+        <conv:CompleteConverter x:Key="CompleteConverter" />
         
     </UserControl.Resources>
 
@@ -69,24 +69,46 @@
 
         <StackPanel Grid.Row="0"
                     Orientation="Horizontal" 
-                    IsEnabled="{Binding IsGroupEnabled}"
                     Margin="10">
-            <Button Content="Группировка" 
-                    Style="{StaticResource MaterialDesignFlatButton}"
-                    Margin="2" 
-                    Width="120"
-                    Click="GroupButton_Click" />
-            <Button Content="Сброс" 
-                    Style="{StaticResource MaterialDesignFlatButton}"
-                    Margin="8,2,2,2" 
-                    Width="120"
-                    Click="UngroupButton_Click" />
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="2,2,10,2"
+                           VerticalAlignment="Center"
+                           Style="{StaticResource MaterialDesignBody2TextBlock}"
+                           Text="Только для чтения:" />
+                <CheckBox Name="cbIsReadOnly"
+                          Margin="2,2,20,2"
+                          VerticalAlignment="Center"
+                          IsChecked="True" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                        Visibility="{Binding IsGroupPanelVisible}">
+                <TextBlock Margin="2,2,10,2"
+                           VerticalAlignment="Center"
+                           Style="{StaticResource MaterialDesignBody2TextBlock}"
+                           Text="Группировка по:" />
+                <TextBlock Margin="2,2,20,2"
+                           VerticalAlignment="Center"
+                           Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                           Text="{Binding CaptionGroupPanel}" />
+                <Button Content="{md:PackIcon CheckBold}" 
+                        ToolTip="Применить группировку"
+                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                        Margin="2" 
+                        Click="GroupButton_Click" Cursor="Hand" />
+                <Button Content="{md:PackIcon CloseThick}" 
+                        ToolTip="Сбросить группировку"
+                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                        Margin="8,2,2,2" 
+                        Click="UngroupButton_Click" Cursor="Hand" />
+            </StackPanel>
+
         </StackPanel>
 
         <DataGrid x:Name="myDataGrid" 
                   Grid.Row="1"
                   AutoGenerateColumns="True" 
-                  IsReadOnly="False">
+                  IsReadOnly="{Binding ElementName=cbIsReadOnly, Path=IsChecked}">
             <DataGrid.GroupStyle>
 
                 <GroupStyle>
@@ -105,17 +127,7 @@
                                                            HorizontalAlignment="Left"
                                                            VerticalAlignment="Center"
                                                            Margin="0,0,0,0"
-                                                           Text="{Binding Path=Name, ConverterParameter=Истина-Ложь, 
-                                                                    Converter={StaticResource isNormConverter}}" />
-                                                <!--<TextBlock.Text>
-                                                        -->
-                                                <!--<conv:ConverterBindableParameter Binding="{Binding Tag, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}"
-                                                                                          Converter="{StaticResource AccessLevelToVisibilityConverter}"
-                                                                                          ConverterParameterBinding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Tag}" />-->
-
-                                                <!--Text="{Binding Path=Name, ConverterParameter={Binding converterParameter}, 
-                                                                    Converter={StaticResource isNormConverter}}">-->
-
+                                                           Text="{Binding Path=Name, ConverterParameter=Истина-Ложь, Converter={StaticResource CompleteConverter}}" />
                                             </Expander.Header>
                                             <Expander.Content>
                                                 <ItemsPresenter />
