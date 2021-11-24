@@ -127,8 +127,11 @@
                                                            HorizontalAlignment="Left"
                                                            VerticalAlignment="Center"
                                                            Margin="0,0,0,0"
-                                                           Text="{Binding Path=Name, ConverterParameter=Истина-Ложь, Converter={StaticResource CompleteConverter}}" />
+                                                           Text="{Binding Path=Name}" 
+                                                           />
                                             </Expander.Header>
+                                            <!--Text="{Binding Path=Name, ConverterParameter=Истина-Ложь, Converter={StaticResource CompleteConverter}}"-->
+
                                             <Expander.Content>
                                                 <ItemsPresenter />
                                             </Expander.Content>
