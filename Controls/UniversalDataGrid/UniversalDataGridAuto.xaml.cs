@@ -65,7 +65,7 @@ public partial class UniversalDataGrid : UserControl
     {
         ICollectionView cvData = CollectionViewSource.GetDefaultView(myDataGrid.ItemsSource);
         cvData.SortDescriptions.Clear();
-        cvData.SortDescriptions.Add(new SortDescription(groupFieldName, ListSortDirection.Descending));
+        cvData.SortDescriptions.Add(new SortDescription(groupFieldName, ListSortDirection.Ascending));
         if (cvData != null && cvData.CanGroup == true)
         {
             cvData.GroupDescriptions.Clear();
