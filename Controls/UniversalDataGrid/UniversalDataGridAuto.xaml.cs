@@ -37,7 +37,7 @@ public partial class UniversalDataGrid : UserControl
         else
         {
             e.Column.Header = rec.Headers;
-            e.Column.Width = new DataGridLength(rec.ColWidth, DataGridLengthUnitType.Star);
+            //e.Column.Width = new DataGridLength(rec.ColWidth, DataGridLengthUnitType.Star);
             if (e.PropertyType != typeof(double))
             {
                 (e.Column).HeaderStyle = this.Resources["mdDataGridTextColumnHeaderStyleLeft"] as Style;

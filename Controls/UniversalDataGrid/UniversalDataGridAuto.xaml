@@ -108,6 +108,7 @@
         <DataGrid x:Name="myDataGrid" 
                   Grid.Row="1"
                   AutoGenerateColumns="True" 
+                  HorizontalAlignment="Left"
                   IsReadOnly="{Binding ElementName=cbIsReadOnly, Path=IsChecked}">
             <DataGrid.GroupStyle>
 

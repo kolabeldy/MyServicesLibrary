@@ -16,21 +16,27 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <md:PackIcon Kind="{Binding Path=Icon}"
-                     Grid.Column="0"
-                     Width="22" 
-                     Height="22" 
-                     HorizontalAlignment="Center"
-                     VerticalAlignment="Top"
-                     Margin="0,13,0,0"
-                     Foreground="White"/>
         <Expander x:Name="ExpanderMenu" 
                   Grid.Column="1"
                   IsExpanded="False" 
                   HorizontalAlignment="Stretch" 
                   Foreground="White"
-                  Background="Transparent" 
-                  Header="{Binding Path=Header}">
+                  Background="Transparent" >
+            <Expander.Header>
+                <StackPanel Orientation="Horizontal">
+                    <md:PackIcon Kind="{Binding Path=Icon}"
+                     Grid.Column="0"
+                     Width="22" 
+                     Height="22" 
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Top"
+                     Margin="-25,0,0,0"
+                     Foreground="White"/>
+                    <TextBlock Text="{Binding Path=Header}" 
+                               Margin="20,0"/>
+                </StackPanel>
+            </Expander.Header>
+
             <ListView x:Name="ListViewMenu" 
                       ItemsSource="{Binding Path=SubItems}" 
                       Background="Transparent"
@@ -39,7 +45,7 @@
                       SelectionChanged="ListViewMenu_SelectionChanged">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Path=Name}" Padding="17,5,0,5" />
+                        <TextBlock Text="{Binding Path=Name}" Padding="37,5,0,5" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
