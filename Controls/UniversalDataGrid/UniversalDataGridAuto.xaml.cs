@@ -1,13 +1,13 @@
-﻿using System.Windows;
-using DataGridTextColumn = System.Windows.Controls.DataGridTextColumn;
+﻿using DataGridTextColumn = System.Windows.Controls.DataGridTextColumn;
 
 namespace MyServicesLibrary.Controls.UniversalDataGrid;
 public partial class UniversalDataGrid : UserControl
 {
-    private List<DataGridStruct> tableStruct;
-    public string CaptionGroupPanel { get; set; } = "Нет";
-    private string groupFieldName;
-    public Visibility IsGroupPanelVisible { get; set; }
+    public void Show<T>(List<T> tableData)
+    {
+        DataContext = this;
+        myDataGrid.ItemsSource = tableData;
+    }
 
     public UniversalDataGrid(List<DataGridStruct> tableStructure)
     {
@@ -16,6 +16,11 @@ public partial class UniversalDataGrid : UserControl
         InitializeComponent();
         myDataGrid.AutoGeneratingColumn += myDataGrid_AutoGeneratingColumn;
     }
+    public string CaptionGroupPanel { get; set; } = "Нет";
+
+    private List<DataGridStruct> tableStruct;
+    private string groupFieldName;
+    private Visibility IsGroupPanelVisible;
 
     private void SetGroupPanelVisible()
     {
@@ -31,13 +36,8 @@ public partial class UniversalDataGrid : UserControl
             IsGroupPanelVisible = Visibility.Collapsed;
         }
     }
-    public void Show<T>(List<T> tableData)
-    {
-        DataContext = this;
-        myDataGrid.ItemsSource = tableData;
-    }
 
-    void myDataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+    private void myDataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
     {
         DataGridStruct rec = tableStruct.Find(m => m.Binding == e.PropertyName);
 
