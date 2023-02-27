@@ -6,4 +6,6 @@ public class DataGridStruct
     public double ColWidth { get; set; }
     public string NumericFormat { get; set; }
     public bool IsGrouping { get; set; }
+    public bool IsVisible { get; set; } = true;
+
 }
