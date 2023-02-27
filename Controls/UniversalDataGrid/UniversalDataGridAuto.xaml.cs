@@ -1,4 +1,5 @@
-﻿using DataGridTextColumn = System.Windows.Controls.DataGridTextColumn;
+﻿using System.Windows;
+using DataGridTextColumn = System.Windows.Controls.DataGridTextColumn;
 
 namespace MyServicesLibrary.Controls.UniversalDataGrid;
 public partial class UniversalDataGrid : UserControl
@@ -32,40 +33,47 @@ public partial class UniversalDataGrid : UserControl
     void myDataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
     {
         DataGridStruct rec = tableStruct.Find(m => m.Binding == e.PropertyName);
+
         if (rec == null || !rec.IsVisible)
             e.Cancel = true;
         else
         {
             e.Column.Header = rec.Headers;
             e.Column.MinWidth = rec.ColMinWidth;
+            SetWidth(e, rec);
+            SetAligment(e, rec);
+        }
+    }
 
-            string strWidth = rec.ColWidth.Trim();
-            if (strWidth == null || strWidth.Length == 0)
-            {
-                strWidth = "1*";
-            }
-            if (strWidth.Contains("*") == true)
-            {
-                strWidth = strWidth.Substring(0, strWidth.Length - 1);
-                e.Column.Width = new DataGridLength(Convert.ToDouble(strWidth), DataGridLengthUnitType.Star);
-            }
-            else
-            {
-                e.Column.Width = new DataGridLength(Convert.ToDouble(strWidth));
-                e.Column.MinWidth = Convert.ToDouble(strWidth);
-            }
-
-
-            if (e.PropertyType != typeof(double))
-            {
-                (e.Column).HeaderStyle = this.Resources["mdDataGridTextColumnHeaderStyleLeft"] as Style;
-            }
-            else if (e.PropertyType == typeof(double))
-            {
-                (e.Column as DataGridTextColumn).Binding.StringFormat = rec.NumericFormat;
-                (e.Column as DataGridTextColumn).ElementStyle = this.Resources["mdDataGridTextColumnStyle"] as Style;
-                (e.Column).HeaderStyle = this.Resources["mdDataGridTextColumnHeaderStyleRight"] as Style;
-            }
+    private void SetWidth(DataGridAutoGeneratingColumnEventArgs e, DataGridStruct rec)
+    {
+        string strWidth = rec.ColWidth.Trim();
+        if (strWidth == null || strWidth.Length == 0)
+        {
+            strWidth = "1*";
+        }
+        if (strWidth.Contains("*") == true)
+        {
+            strWidth = strWidth.Substring(0, strWidth.Length - 1);
+            e.Column.Width = new DataGridLength(Convert.ToDouble(strWidth), DataGridLengthUnitType.Star);
+        }
+        else
+        {
+            e.Column.Width = new DataGridLength(Convert.ToDouble(strWidth));
+            e.Column.MinWidth = Convert.ToDouble(strWidth);
+        }
+    }
+    private void SetAligment(DataGridAutoGeneratingColumnEventArgs e, DataGridStruct rec)
+    {
+        if (e.PropertyType != typeof(double))
+        {
+            (e.Column).HeaderStyle = this.Resources["mdDataGridTextColumnHeaderStyleLeft"] as Style;
+        }
+        else if (e.PropertyType == typeof(double))
+        {
+            (e.Column as DataGridTextColumn).Binding.StringFormat = rec.NumericFormat;
+            (e.Column as DataGridTextColumn).ElementStyle = this.Resources["mdDataGridTextColumnStyle"] as Style;
+            (e.Column).HeaderStyle = this.Resources["mdDataGridTextColumnHeaderStyleRight"] as Style;
         }
     }
     private void UngroupButton_Click(object sender, RoutedEventArgs e)
