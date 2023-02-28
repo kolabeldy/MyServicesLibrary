@@ -87,19 +87,22 @@
                            VerticalAlignment="Center"
                            Style="{StaticResource MaterialDesignBody2TextBlock}"
                            Text="Группировка по:" />
-                <TextBlock Margin="2,2,20,2"
+                <TextBlock Margin="2,2,10,2"
                            VerticalAlignment="Center"
                            Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
                            Text="{Binding CaptionGroupPanel}" />
                 <Button Content="{md:PackIcon CheckBold}" 
+                        Name="BtnGroup"
                         ToolTip="Применить группировку"
-                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                        Style="{StaticResource MaterialDesignFlatButton}"
                         Margin="2" 
                         Click="GroupButton_Click" Cursor="Hand" />
                 <Button Content="{md:PackIcon CloseThick}" 
+                        Name="BtnUnGroup"
                         ToolTip="Сбросить группировку"
-                        Style="{StaticResource MaterialDesignRaisedLightButton}"
-                        Margin="8,2,2,2" 
+                        
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        Margin="2" 
                         Click="UngroupButton_Click" Cursor="Hand" />
             </StackPanel>
 

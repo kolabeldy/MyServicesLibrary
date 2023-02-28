@@ -15,12 +15,14 @@ public partial class UniversalDataGrid : UserControl
         SetGroupPanelVisible();
         InitializeComponent();
         myDataGrid.AutoGeneratingColumn += myDataGrid_AutoGeneratingColumn;
+        BtnGroupingVisible();
     }
     public string CaptionGroupPanel { get; set; } = "Нет";
 
     private List<DataGridStruct> tableStruct;
     private string groupFieldName;
     private Visibility IsGroupPanelVisible;
+    private bool isGrouping;
 
     private void SetGroupPanelVisible()
     {
@@ -87,6 +89,8 @@ public partial class UniversalDataGrid : UserControl
 
     private void UngroupButton_Click(object sender, RoutedEventArgs e)
     {
+        isGrouping = false;
+        BtnGroupingVisible();
         ICollectionView cvData = CollectionViewSource.GetDefaultView(myDataGrid.ItemsSource);
         cvData.SortDescriptions.Clear();
         if (cvData != null)
@@ -97,6 +101,8 @@ public partial class UniversalDataGrid : UserControl
 
     private void GroupButton_Click(object sender, RoutedEventArgs e)
     {
+        isGrouping = true;
+        BtnGroupingVisible();
         ICollectionView cvData = CollectionViewSource.GetDefaultView(myDataGrid.ItemsSource);
         cvData.SortDescriptions.Clear();
         cvData.SortDescriptions.Add(new SortDescription(groupFieldName, ListSortDirection.Ascending));
@@ -104,6 +110,20 @@ public partial class UniversalDataGrid : UserControl
         {
             cvData.GroupDescriptions.Clear();
             cvData.GroupDescriptions.Add(new PropertyGroupDescription(groupFieldName));
+        }
+    }
+
+    private void BtnGroupingVisible()
+    {
+        if (isGrouping)
+        {
+            BtnGroup.Visibility = Visibility.Collapsed;
+            BtnUnGroup.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            BtnGroup.Visibility = Visibility.Visible;
+            BtnUnGroup.Visibility = Visibility.Collapsed;
         }
     }
 
