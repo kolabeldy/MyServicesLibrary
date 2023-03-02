@@ -17,7 +17,7 @@
 
     d:DesignHeight="400"
     d:DesignWidth="1200"
-    mc:Ignorable="d">
+    mc:Ignorable="d" >
 
     <UserControl.Resources>
         <Style x:Key="mdDataGridTextColumnStyle" TargetType="{x:Type TextBlock}" 
@@ -78,10 +78,11 @@
                 <CheckBox Name="cbIsReadOnly"
                           Margin="2,2,20,2"
                           VerticalAlignment="Center"
-                          IsChecked="True" />
+                          IsChecked="{Binding IsTableReadOnly}" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal"
+                        Name="GroupPanel"
                         Visibility="{Binding IsGroupPanelVisible}">
                 <TextBlock Margin="2,2,10,2"
                            VerticalAlignment="Center"
@@ -104,6 +105,13 @@
                         Style="{StaticResource MaterialDesignFlatButton}"
                         Margin="2" 
                         Click="UngroupButton_Click" Cursor="Hand" />
+                <Button Content="{md:PackIcon Kind=ContentSave}" 
+                        Name="BtnTableChanged"
+                        ToolTip="Записать в базу данных"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        Margin="2" 
+                        Cursor="Hand" Click="BtnTableChanged_Click" />
+
             </StackPanel>
 
         </StackPanel>

@@ -1,27 +1,56 @@
 ﻿using DataGridTextColumn = System.Windows.Controls.DataGridTextColumn;
 
 namespace MyServicesLibrary.Controls.UniversalDataGrid;
-public partial class UniversalDataGrid : UserControl
+
+public delegate void IsTableChanged();
+public partial class UniversalDataGrid : UserControl, INotifyPropertyChanged
 {
+    public event IsTableChanged OnTableChanged;
+
+    private bool _IsTableReadOnly = true;
+    public bool IsTableReadOnly
+    {
+        get => _IsTableReadOnly;
+        set
+        {
+            _IsTableReadOnly = value;
+            BtnTableChanged.IsEnabled = !value;
+            OnPropertyChanged("IsTableReadOnly");
+        }
+    }
+
     public void Show<T>(List<T> tableData)
     {
-        DataContext = this;
+        
         myDataGrid.ItemsSource = tableData;
     }
 
     public UniversalDataGrid(List<DataGridStruct> tableStructure)
     {
+        DataContext = this;
         tableStruct = tableStructure;
-        SetGroupPanelVisible();
         InitializeComponent();
+        BtnTableChanged.IsEnabled = !IsTableReadOnly;
+        SetGroupPanelVisible();
         myDataGrid.AutoGeneratingColumn += myDataGrid_AutoGeneratingColumn;
-        BtnGroupingVisible();
+        BtnGroupingVisibleChange();
     }
-    public string CaptionGroupPanel { get; set; } = "Нет";
+    private string _CaptionGroupPanel = "Нет";
+    public string CaptionGroupPanel
+    {
+        get => _CaptionGroupPanel;
+        set
+        {
+            _CaptionGroupPanel = value;
+            OnPropertyChanged("CaptionGroupPanel");
+        }
+    }
+
+
+
 
     private List<DataGridStruct> tableStruct;
     private string groupFieldName;
-    private Visibility IsGroupPanelVisible;
     private bool isGrouping;
 
     private void SetGroupPanelVisible()
@@ -31,11 +60,11 @@ public partial class UniversalDataGrid : UserControl
         {
             groupFieldName = rec.Binding;
             CaptionGroupPanel = rec.Headers;
-            IsGroupPanelVisible = Visibility.Visible;
+            GroupPanel.Visibility = Visibility.Visible;
         }
         else
         {
-            IsGroupPanelVisible = Visibility.Collapsed;
+            GroupPanel.Visibility = Visibility.Collapsed;
         }
     }
 
@@ -90,7 +119,7 @@ public partial class UniversalDataGrid : UserControl
     private void UngroupButton_Click(object sender, RoutedEventArgs e)
     {
         isGrouping = false;
-        BtnGroupingVisible();
+        BtnGroupingVisibleChange();
         ICollectionView cvData = CollectionViewSource.GetDefaultView(myDataGrid.ItemsSource);
         cvData.SortDescriptions.Clear();
         if (cvData != null)
@@ -102,7 +131,7 @@ public partial class UniversalDataGrid : UserControl
     private void GroupButton_Click(object sender, RoutedEventArgs e)
     {
         isGrouping = true;
-        BtnGroupingVisible();
+        BtnGroupingVisibleChange();
         ICollectionView cvData = CollectionViewSource.GetDefaultView(myDataGrid.ItemsSource);
         cvData.SortDescriptions.Clear();
         cvData.SortDescriptions.Add(new SortDescription(groupFieldName, ListSortDirection.Ascending));
@@ -113,7 +142,7 @@ public partial class UniversalDataGrid : UserControl
         }
     }
 
-    private void BtnGroupingVisible()
+    private void BtnGroupingVisibleChange()
     {
         if (isGrouping)
         {
@@ -125,6 +154,19 @@ public partial class UniversalDataGrid : UserControl
             BtnGroup.Visibility = Visibility.Visible;
             BtnUnGroup.Visibility = Visibility.Collapsed;
         }
+    }
+
+    private void BtnTableChanged_Click(object sender, RoutedEventArgs e)
+    {
+        OnTableChanged();
+    }
+
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    public void OnPropertyChanged([CallerMemberName] string prop = "")
+    {
+        if (PropertyChanged != null)
+            PropertyChanged(this, new PropertyChangedEventArgs(prop));
     }
 
 }
