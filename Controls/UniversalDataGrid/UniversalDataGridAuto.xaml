@@ -105,14 +105,15 @@
                         Style="{StaticResource MaterialDesignFlatButton}"
                         Margin="2" 
                         Click="UngroupButton_Click" Cursor="Hand" />
-                <Button Content="{md:PackIcon Kind=ContentSave}" 
+
+            </StackPanel>
+            <Button Content="{md:PackIcon Kind=ContentSave}" 
                         Name="BtnTableChanged"
                         ToolTip="Записать в базу данных"
                         Style="{StaticResource MaterialDesignFlatButton}"
                         Margin="2" 
                         Cursor="Hand" Click="BtnTableChanged_Click" />
 
-            </StackPanel>
 
         </StackPanel>
 

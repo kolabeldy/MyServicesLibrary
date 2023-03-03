@@ -1,12 +1,11 @@
-﻿using DataGridTextColumn = System.Windows.Controls.DataGridTextColumn;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
+using DataGridTextColumn = System.Windows.Controls.DataGridTextColumn;
 
 namespace MyServicesLibrary.Controls.UniversalDataGrid;
 
-public delegate void IsTableChanged();
 public partial class UniversalDataGrid : UserControl, INotifyPropertyChanged
 {
-    public event IsTableChanged OnTableChanged;
-
     private bool _IsTableReadOnly = true;
     public bool IsTableReadOnly
     {
@@ -19,16 +18,17 @@ public partial class UniversalDataGrid : UserControl, INotifyPropertyChanged
         }
     }
 
-    public void Show<T>(List<T> tableData)
+    private DbContext db;
+    public void Show<T>(List<T> tableData, DbContext db = null)
     {
-        
         myDataGrid.ItemsSource = tableData;
+        this.db = db;
     }
 
     public UniversalDataGrid(List<DataGridStruct> tableStructure)
     {
-        DataContext = this;
         tableStruct = tableStructure;
+        DataContext = this;
         InitializeComponent();
         BtnTableChanged.IsEnabled = !IsTableReadOnly;
         SetGroupPanelVisible();
@@ -158,7 +158,7 @@ public partial class UniversalDataGrid : UserControl, INotifyPropertyChanged
 
     private void BtnTableChanged_Click(object sender, RoutedEventArgs e)
     {
-        OnTableChanged();
+        db.SaveChanges();
     }
 
 
