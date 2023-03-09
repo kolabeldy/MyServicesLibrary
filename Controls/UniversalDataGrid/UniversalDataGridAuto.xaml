@@ -14,7 +14,6 @@
     TextOptions.TextRenderingMode="Auto"
     Background="{DynamicResource MaterialDesignPaper}"
     FontFamily="{DynamicResource MaterialDesignFont}"
-
     d:DesignHeight="400"
     d:DesignWidth="1200"
     mc:Ignorable="d" >
@@ -40,7 +39,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <Style x:Key="mdDataGridTextColumnHeaderStyleRight" TargetType="{x:Type DataGridColumnHeader}"
                BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
             <Setter Property="HorizontalContentAlignment" Value="Right" />
@@ -56,72 +55,121 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <conv:CompleteConverter x:Key="CompleteConverter" />
-        
+
+        <Style x:Key="CustomDataGridRowHeader" TargetType="DataGridRowHeader">
+            <Setter Property="Width" Value="25"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Label Content="{Binding [0]}"
+                               FontSize="10"
+                               Margin="-4"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </UserControl.Resources>
 
     <Grid Margin="0,0,0,0" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
+            <RowDefinition  />
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0"
+        <StackPanel Grid.Row="1"
                     Orientation="Horizontal" 
-                    Margin="10">
+                    HorizontalAlignment="Left"
+                    Margin="10,4,10,4">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Margin="2,2,10,2"
+                
+                <TextBlock Margin="2,2"
+                           FontSize="10"
+                           Width="48"
+                           TextWrapping="Wrap"
                            VerticalAlignment="Center"
                            Style="{StaticResource MaterialDesignBody2TextBlock}"
-                           Text="Только для чтения:" />
-                <CheckBox Name="cbIsReadOnly"
-                          Margin="2,2,20,2"
-                          VerticalAlignment="Center"
-                          IsChecked="{Binding IsTableReadOnly}" />
+                           Foreground="{StaticResource PrimaryHueDarkBrush}"
+                           Text="{Binding TableEditMode}" />
+                <ToggleButton
+                    Name="cbIsReadOnly"
+                    Margin="8,2"
+                    Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                    ToolTip="{Binding TableReadOnly}"
+                    IsChecked="{Binding IsTableReadOnly}" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal"
                         Name="GroupPanel"
                         Visibility="{Binding IsGroupPanelVisible}">
-                <TextBlock Margin="2,2,10,2"
-                           VerticalAlignment="Center"
-                           Style="{StaticResource MaterialDesignBody2TextBlock}"
-                           Text="Группировка по:" />
-                <TextBlock Margin="2,2,10,2"
-                           VerticalAlignment="Center"
-                           Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                           Text="{Binding CaptionGroupPanel}" />
-                <Button Content="{md:PackIcon CheckBold}" 
+                
+                <Button Content="{md:PackIcon Kind=Group}" 
                         Name="BtnGroup"
-                        ToolTip="Применить группировку"
+                        Padding="-5,0"
+                        Width="30"
+                        ToolTip="{Binding GroupToolTip}"
                         Style="{StaticResource MaterialDesignFlatButton}"
                         Margin="2" 
-                        Click="GroupButton_Click" Cursor="Hand" />
-                <Button Content="{md:PackIcon CloseThick}" 
+                        Command="{Binding GroupingCommand}"
+                        Cursor="Hand" />
+                
+                <Button Content="{md:PackIcon Kind=Ungroup}" 
                         Name="BtnUnGroup"
                         ToolTip="Сбросить группировку"
-                        
+                        Padding="-5,0"
+                        Width="30"
                         Style="{StaticResource MaterialDesignFlatButton}"
                         Margin="2" 
-                        Click="UngroupButton_Click" Cursor="Hand" />
+                        Command="{Binding UngroupingCommand}"
+                        Cursor="Hand" />
 
             </StackPanel>
-            <Button Content="{md:PackIcon Kind=ContentSave}" 
-                        Name="BtnTableChanged"
-                        ToolTip="Записать в базу данных"
-                        Style="{StaticResource MaterialDesignFlatButton}"
-                        Margin="2" 
-                        Cursor="Hand" Click="BtnTableChanged_Click" />
+            
+            <Button Content="{md:PackIcon Kind=TableAdd}" 
+                    Name="BtnTableAdd"
+                    Padding="-5,0"
+                    Width="30"
+                    ToolTip="Новая запись"
+                    Style="{StaticResource MaterialDesignFlatButton}"
+                    Margin="2" 
+                    Command="{Binding DbAddCommand}"
+                    Cursor="Hand" />
+            
+            <Button Content="{md:PackIcon Kind=TableRemove}" 
+                    Name="BtnTableDel"
+                    Padding="-5,0"
+                    Width="30"
+                    ToolTip="Удалить запись"
+                    Style="{StaticResource MaterialDesignFlatAccentButton}"
+                    Margin="2" 
+                    Command="{Binding DbAddCommand}"
+                    Cursor="Hand" />
 
+            <Button Content="{md:PackIcon Kind=ContentSave}" 
+                    Name="BtnTableChanged"
+                    Padding="-5,0"
+                    Width="30"
+                    ToolTip="Записать"
+                    Style="{StaticResource MaterialDesignFlatButton}"
+                    Margin="2" 
+                    Command="{Binding DbSaveChangesCommand}"
+                    Cursor="Hand" />
 
         </StackPanel>
 
         <DataGrid x:Name="myDataGrid" 
-                  Grid.Row="1"
+                  Grid.Row="0"
                   AutoGenerateColumns="True" 
                   HorizontalAlignment="Left"
-                  IsReadOnly="{Binding ElementName=cbIsReadOnly, Path=IsChecked}">
+                  HeadersVisibility="Column"
+                  SelectionUnit="FullRow"
+                  ItemsSource="{Binding TableData}"
+                  SelectedItem="{Binding SelectedRow, Mode=TwoWay}"
+                  IsReadOnly="{Binding ElementName=cbIsReadOnly, Path=IsChecked}"
+                  CanUserAddRows="False">
+
             <DataGrid.GroupStyle>
 
                 <GroupStyle>
@@ -140,10 +188,8 @@
                                                            HorizontalAlignment="Left"
                                                            VerticalAlignment="Center"
                                                            Margin="0,0,0,0"
-                                                           Text="{Binding Path=Name}" 
-                                                           />
+                                                           Text="{Binding Path=Name}" />
                                             </Expander.Header>
-                                            <!--Text="{Binding Path=Name, ConverterParameter=Истина-Ложь, Converter={StaticResource CompleteConverter}}"-->
 
                                             <Expander.Content>
                                                 <ItemsPresenter />
@@ -166,6 +212,6 @@
             </DataGrid.RowStyle>
 
         </DataGrid>
-        
+
     </Grid>
 </UserControl>
