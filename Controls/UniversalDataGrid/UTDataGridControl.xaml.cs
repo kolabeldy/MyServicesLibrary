@@ -1,8 +1,8 @@
 ﻿namespace MyServicesLibrary.Controls.UniversalDataGrid;
 
-public partial class UniversalDataGrid : UserControl
+public partial class UTDataGridControl : UserControl
 {
-    public UniversalDataGrid()
+    public UTDataGridControl()
     {
         InitializeComponent();
     }

@@ -1,15 +1,14 @@
 ﻿<UserControl
-    x:Class="MyServicesLibrary.Controls.UniversalDataGrid.UniversalDataGrid"
+    x:Class="MyServicesLibrary.Controls.UniversalDataGrid.UTDataGridControl"
     Name="ThisControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-    xmlns:conv="clr-namespace:MyServicesLibrary.Converters"
+    xmlns:conv="clr-namespace:MyServicesLibrary.Converters" xmlns:system="clr-namespace:System;assembly=netstandard"
     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
     TextElement.FontWeight="Regular"
-    TextElement.FontSize="13"
     TextOptions.TextFormattingMode="Ideal"
     TextOptions.TextRenderingMode="Auto"
     Background="{DynamicResource MaterialDesignPaper}"
@@ -19,6 +18,8 @@
     mc:Ignorable="d" >
 
     <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        
         <Style x:Key="mdDataGridTextColumnStyle" TargetType="{x:Type TextBlock}" 
                BasedOn="{StaticResource MaterialDesignDataGridTextColumnStyle}">
             <Setter Property="HorizontalAlignment" Value="Right" />
@@ -64,7 +65,6 @@
                 <Setter.Value>
                     <ControlTemplate>
                         <Label Content="{Binding [0]}"
-                               FontSize="10"
                                Margin="-4"/>
                     </ControlTemplate>
                 </Setter.Value>
@@ -75,99 +75,126 @@
 
     <Grid Margin="0,0,0,0" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
+            <RowDefinition  Height="Auto"/>
+            <RowDefinition  Height="Auto"/>
             <RowDefinition  />
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="1"
-                    Orientation="Horizontal" 
-                    HorizontalAlignment="Left"
-                    Margin="10,4,10,4">
-            <StackPanel Orientation="Horizontal">
-                
-                <TextBlock Margin="2,2"
-                           FontSize="10"
-                           Width="48"
-                           TextWrapping="Wrap"
-                           VerticalAlignment="Center"
-                           Style="{StaticResource MaterialDesignBody2TextBlock}"
-                           Foreground="{StaticResource PrimaryHueDarkBrush}"
-                           Text="{Binding TableEditMode}" />
-                <ToggleButton
-                    Name="cbIsReadOnly"
-                    Margin="8,2"
-                    Style="{StaticResource MaterialDesignSwitchToggleButton}"
-                    ToolTip="{Binding TableReadOnly}"
-                    IsChecked="{Binding IsTableReadOnly}" />
-            </StackPanel>
 
-            <StackPanel Orientation="Horizontal"
-                        Name="GroupPanel"
-                        Visibility="{Binding IsGroupPanelVisible}">
-                
-                <Button Content="{md:PackIcon Kind=Group}" 
-                        Name="BtnGroup"
-                        Padding="-5,0"
-                        Width="30"
-                        ToolTip="{Binding GroupToolTip}"
-                        Style="{StaticResource MaterialDesignFlatButton}"
-                        Margin="2" 
-                        Command="{Binding GroupingCommand}"
-                        Cursor="Hand" />
-                
-                <Button Content="{md:PackIcon Kind=Ungroup}" 
-                        Name="BtnUnGroup"
-                        ToolTip="Сбросить группировку"
-                        Padding="-5,0"
-                        Width="30"
-                        Style="{StaticResource MaterialDesignFlatButton}"
-                        Margin="2" 
-                        Command="{Binding UngroupingCommand}"
-                        Cursor="Hand" />
 
-            </StackPanel>
+        <ToolBarTray 
+            Grid.Row="0">
             
-            <Button Content="{md:PackIcon Kind=TableAdd}" 
-                    Name="BtnTableAdd"
-                    Padding="-5,0"
-                    Width="30"
-                    ToolTip="Новая запись"
-                    Style="{StaticResource MaterialDesignFlatButton}"
-                    Margin="2" 
-                    Command="{Binding DbAddCommand}"
-                    Cursor="Hand" />
-            
-            <Button Content="{md:PackIcon Kind=TableRemove}" 
-                    Name="BtnTableDel"
-                    Padding="-5,0"
-                    Width="30"
-                    ToolTip="Удалить запись"
-                    Style="{StaticResource MaterialDesignFlatAccentButton}"
-                    Margin="2" 
-                    Command="{Binding DbAddCommand}"
-                    Cursor="Hand" />
+            <ToolBar 
+                Style="{DynamicResource MaterialDesignToolBar}"
+                Visibility="{Binding IsToolBarEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"                
+                ClipToBounds="False">
+                
+                <Label
+                    Content="Записать:"
+                    VerticalAlignment="Center" />
 
-            <Button Content="{md:PackIcon Kind=ContentSave}" 
+                <Button
                     Name="BtnTableChanged"
-                    Padding="-5,0"
-                    Width="30"
-                    ToolTip="Записать"
-                    Style="{StaticResource MaterialDesignFlatButton}"
-                    Margin="2" 
-                    Command="{Binding DbSaveChangesCommand}"
-                    Cursor="Hand" />
+                    ToolTip="Сохранить"
+                    IsEnabled="{Binding OnTableEdit}"
+                    Content="{md:PackIcon Kind=ContentSave}" 
+                    Command="{Binding DbSaveChangesCommand}"/>
+                <Separator />
+                
+                <TextBlock
+                    TextWrapping="Wrap"
+                    Width="68"
+                    Text="Добавить/ удалить:"
+                    VerticalAlignment="Center" />
 
+                <Button
+                    Command="{Binding DbAddCommand}"
+                    IsEnabled="{Binding IsAddDelEnabled}"
+                    ToolTip="Новая строка"
+                    Content="{md:PackIcon Kind=TableRowAddAfter}" Cursor="Hand" />
+                <Button
+                    IsEnabled="{Binding IsAddDelEnabled}"
+                    ToolTip="Удалить строку"
+                    Content="{md:PackIcon Kind=TableRowRemove}" Cursor="Hand" />
+                    
+                <Separator />
+
+                <TextBlock
+                    Text="Правка/ просмотр:"
+                    TextWrapping="Wrap"
+                    Width="68"
+                    VerticalAlignment="Center" />
+
+                <ListBox
+                    Name="EditPanel"
+                    BorderThickness="0"
+                    IsEnabled="{Binding OnTableEdit}"
+                    SelectedIndex="{Binding EditSelected, Mode=TwoWay}">
+
+                    <ListBoxItem
+                        Content="{md:PackIcon Kind=Edit}" 
+                        ToolTip="Режим правки" />
+                    <ListBoxItem 
+                        Content="{md:PackIcon Kind=TableCancel}" 
+                        ToolTip="Режим просмотра" />
+                </ListBox>
+
+                <Separator />
+                <Label
+                    Content="Группировка:"
+                    VerticalAlignment="Center" />
+
+                <ListBox
+                    Name="GroupPanel"
+                    SelectedIndex="{Binding GroupSelected, Mode=TwoWay}">
+                    
+                    <ListBoxItem
+                        Content="{md:PackIcon Kind=Group}" 
+                        ToolTip="{Binding GroupToolTip}" />
+                    <ListBoxItem 
+                        Content="{md:PackIcon Kind=Ungroup}" 
+                        ToolTip="Разгруппировать" />
+                </ListBox>
+                
+                <Separator />
+                
+                <TextBlock
+                    Text="Размер шрифта:"
+                    TextWrapping="Wrap"
+                    Width="60"
+                    VerticalAlignment="Center" />
+                <ComboBox 
+                    Name="cbFontSize"
+                    ItemsSource="{Binding TableFontSizeList}"
+                    SelectedValue="{Binding TableFontSize, Mode=TwoWay}" >
+                </ComboBox>
+            </ToolBar>
+        </ToolBarTray>
+        <StackPanel Orientation="Horizontal"
+                    Margin="10,0,0,10"
+                    Grid.Row="1">
+            <Button 
+                Style="{StaticResource MaterialDesignFlatButton}"
+                Content="{md:PackIcon Kind=Menu}" 
+                VerticalAlignment="Center"
+                Command="{Binding TollBarVisibleChangeCommand}" Cursor="Hand"/>
+            <Label Name="TableCaption"
+                   Style="{StaticResource MaterialDesignLabel}"
+                   FontSize="22"
+                   Content="{Binding TableCaption}"/>
         </StackPanel>
 
         <DataGrid x:Name="myDataGrid" 
-                  Grid.Row="0"
+                  Grid.Row="2"
                   AutoGenerateColumns="True" 
                   HorizontalAlignment="Left"
                   HeadersVisibility="Column"
                   SelectionUnit="FullRow"
                   ItemsSource="{Binding TableData}"
                   SelectedItem="{Binding SelectedRow, Mode=TwoWay}"
-                  IsReadOnly="{Binding ElementName=cbIsReadOnly, Path=IsChecked}"
+                  IsReadOnly="{Binding IsTableReadOnly}"
+                  FontSize="{Binding TableFontSize}"
                   CanUserAddRows="False">
 
             <DataGrid.GroupStyle>
@@ -207,7 +234,6 @@
                 <Style TargetType="DataGridRow">
                     <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
                     <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
-                    <Setter Property="FontSize" Value="12" />
                 </Style>
             </DataGrid.RowStyle>
 
